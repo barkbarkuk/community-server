@@ -10,6 +10,7 @@ script:
  - npm run validate
  - npm run test
  - .travis/validate-package.sh
+ - sh test/surface/run-solid-test-suite.sh
 after_success:
  - npm run coveralls
 cache: npm
