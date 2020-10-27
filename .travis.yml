@@ -4,13 +4,14 @@ node_js:
  - "12"
  - "14"
  - "node"
+
 script:
- - npm run build
  - npm run lint
  - npm run validate
- - npm run test
- - .travis/validate-package.sh
- - sh test/system/run-solid-test-suite.sh
+ - npm run test:integration
+ - npm run test:unit
+ - npm run test:system
+ - npm run test:deploy
+
 after_success:
  - npm run coveralls
-cache: npm
