@@ -2,7 +2,7 @@
 set -e
 npm start &
 PID=$!
-# git clone https://github.com/solid/solid-crud-tests
+git clone https://github.com/solid/solid-crud-tests
 cd solid-crud-tests
 git checkout v0.1.1
 npm install
