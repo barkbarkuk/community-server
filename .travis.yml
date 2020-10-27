@@ -3,15 +3,34 @@ node_js:
  - "10"
  - "12"
  - "14"
+ - "14.0"
+ - "lts/*"
  - "node"
 
 script:
- - npm run lint
- - npm run validate
- - npm run test:integration
- - npm run test:unit
- - npm run test:system
- - npm run test:deploy
+  - npm run lint
+  - npm run validate
+  - npm run test:integration
+  - npm run test:unit
+  - npm run test:deploy
 
-after_success:
- - npm run coveralls
+stages:
+  - test
+  - test:optional
+  - coverage
+
+jobs:
+  allow_failures:
+    - node_js:
+        - "14.0"
+        - "node"
+  include:
+    - stage: test
+      name: "System tests"
+      node_js: "14.0"
+      script:
+       - npm run test:system
+    - stage: coverage
+      node_js: "14"
+      script:
+       - npm run coveralls
