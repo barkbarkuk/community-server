@@ -3,6 +3,7 @@ import { RepresentationMetadata } from '../../../src/ldp/representation/Represen
 import type { RepresentationConverter } from '../../../src/storage/conversion/RepresentationConverter';
 import { RepresentationConvertingStore } from '../../../src/storage/RepresentationConvertingStore';
 import type { ResourceStore } from '../../../src/storage/ResourceStore';
+import { InternalServerError } from '../../../src/util/errors/InternalServerError';
 import { CONTENT_TYPE } from '../../../src/util/UriConstants';
 
 describe('A RepresentationConvertingStore', (): void => {
@@ -99,5 +100,12 @@ describe('A RepresentationConvertingStore', (): void => {
     await expect(store.setRepresentation(id, representation, 'conditions' as any)).resolves.toBeUndefined();
     expect(inConverter.handleSafe).toHaveBeenCalledTimes(2);
     expect(source.setRepresentation).toHaveBeenLastCalledWith(id, 'inConvert', 'conditions');
+  });
+
+  it('throws an error if no content-type is provided.', async(): Promise<void> => {
+    metadata.removeAll(CONTENT_TYPE);
+    const id = { path: 'identifier' };
+
+    await expect(store.addResource(id, representation, 'conditions' as any)).rejects.toThrow(InternalServerError);
   });
 });

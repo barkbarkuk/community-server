@@ -1,4 +1,5 @@
 import type { HttpRequest } from '../../server/HttpRequest';
+import { INTERNAL_QUADS } from '../../util/ContentTypes';
 import type { AcceptHeader } from '../../util/HeaderUtil';
 import {
   parseAccept,
@@ -39,6 +40,13 @@ export class AcceptPreferenceParser extends PreferenceParser {
     if (input.headers['accept-datetime']) {
       result.datetime = [{ value: input.headers['accept-datetime'] as string, weight: 1 }];
     }
+
+    if (!result.type) {
+      result.type = [];
+    }
+
+    // Always reject quads as output
+    result.type.push({ value: INTERNAL_QUADS, weight: 0 });
 
     return result;
   }

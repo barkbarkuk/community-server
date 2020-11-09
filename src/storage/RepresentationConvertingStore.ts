@@ -2,6 +2,7 @@ import type { Representation } from '../ldp/representation/Representation';
 import type { RepresentationPreferences } from '../ldp/representation/RepresentationPreferences';
 import type { ResourceIdentifier } from '../ldp/representation/ResourceIdentifier';
 import { getLoggerFor } from '../logging/LogUtil';
+import { InternalServerError } from '../util/errors/InternalServerError';
 import type { Conditions } from './Conditions';
 import { matchingTypes } from './conversion/ConversionUtil';
 import type { RepresentationConverter, RepresentationConverterArgs } from './conversion/RepresentationConverter';
@@ -71,8 +72,12 @@ export class RepresentationConvertingStore<T extends ResourceStore = ResourceSto
   private matchesPreferences(representation: Representation, preferences: RepresentationPreferences): boolean {
     const { contentType } = representation.metadata;
 
+    if (!contentType) {
+      throw new InternalServerError('Content-type is required for data conversion.');
+    }
+
     // Check if there is a result if we try to map the preferences to the content-type
-    return matchingTypes(preferences, [ contentType! ]).length > 0;
+    return matchingTypes(preferences, [ contentType ]).length > 0;
   }
 
   /**
