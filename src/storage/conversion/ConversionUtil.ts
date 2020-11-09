@@ -12,15 +12,30 @@ import type { RepresentationConverterArgs } from './RepresentationConverter';
  * @throws UnsupportedHttpError
  * If the type preferences are undefined.
  *
- * @returns The filtered list of preferences.
+ * @returns The weighted and filtered list of supported types.
  */
 export const matchingTypes = (preferences: RepresentationPreferences, supported: string[]):
 RepresentationPreference[] => {
   if (!Array.isArray(preferences.type)) {
     throw new UnsupportedHttpError('Output type required for conversion.');
   }
-  return preferences.type.filter(({ value, weight }): boolean => weight > 0 &&
-    supported.some((type): boolean => matchingMediaType(value, type)));
+
+  // Map all supported types to their corresponding weight
+  const weightedSupported = supported.map((type): RepresentationPreference => {
+    let weight = 0;
+    for (const preference of preferences.type!) {
+      if (matchingMediaType(type, preference.value)) {
+        // Never accept anything with weight 0
+        if (preference.weight === 0) {
+          return { value: type, weight: 0 };
+        }
+        weight = Math.max(weight, preference.weight);
+      }
+    }
+    return { value: type, weight };
+  });
+
+  return weightedSupported.filter((preference): boolean => preference.weight > 0);
 };
 
 /**

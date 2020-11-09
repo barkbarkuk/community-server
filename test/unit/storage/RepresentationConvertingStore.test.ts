@@ -30,7 +30,7 @@ describe('A RepresentationConvertingStore', (): void => {
 
   it('returns the Representation from the source if no changes are required.', async(): Promise<void> => {
     const result = await store.getRepresentation({ path: 'path' }, { type: [
-      { value: 'text/*', weight: 0 }, { value: 'text/turtle', weight: 1 },
+      { value: 'application/*', weight: 0 }, { value: 'text/turtle', weight: 1 },
     ]});
     expect(result).toEqual({
       data: 'data',
@@ -39,7 +39,9 @@ describe('A RepresentationConvertingStore', (): void => {
     expect(result.metadata.contentType).toEqual('text/turtle');
     expect(source.getRepresentation).toHaveBeenCalledTimes(1);
     expect(source.getRepresentation).toHaveBeenLastCalledWith(
-      { path: 'path' }, { type: [{ value: 'text/*', weight: 0 }, { value: 'text/turtle', weight: 1 }]}, undefined,
+      { path: 'path' },
+      { type: [{ value: 'application/*', weight: 0 }, { value: 'text/turtle', weight: 1 }]},
+      undefined,
     );
     expect(outConverter.handleSafe).toHaveBeenCalledTimes(0);
   });
