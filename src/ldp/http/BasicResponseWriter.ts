@@ -34,6 +34,10 @@ export class BasicResponseWriter extends ResponseWriter {
 
     if (input.result.data) {
       input.result.data.pipe(input.response);
+      input.result.data.on('error', (error): void => {
+        this.logger.error(`Writing to HttpResponse failed with message ${error.message}`);
+        input.response.destroy(error);
+      });
     } else {
       // If there is input data the response will end once the input stream ends
       input.response.end();

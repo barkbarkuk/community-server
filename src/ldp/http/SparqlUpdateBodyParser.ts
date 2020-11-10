@@ -29,10 +29,8 @@ export class SparqlUpdateBodyParser extends BodyParser {
     // Note that readableObjectMode is only defined starting from Node 12
     // It is impossible to check if object mode is enabled in Node 10 (without accessing private variables)
     const options = { objectMode: request.readableObjectMode };
-    const toAlgebraStream = new PassThrough(options);
-    const dataCopy = new PassThrough(options);
-    pipeStreamsAndErrors(request, toAlgebraStream);
-    pipeStreamsAndErrors(request, dataCopy);
+    const toAlgebraStream = pipeStreamsAndErrors(request, new PassThrough(options));
+    const dataCopy = pipeStreamsAndErrors(request, new PassThrough(options));
     let algebra: Algebra.Operation;
     try {
       const sparql = await readableToString(toAlgebraStream);

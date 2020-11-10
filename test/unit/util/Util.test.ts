@@ -48,19 +48,19 @@ describe('Util function', (): void => {
     it('pipes data from one stream to the other.', async(): Promise<void> => {
       const input = streamifyArray([ 'data' ]);
       const output = new PassThrough();
-      pipeStreamsAndErrors(input, output);
-      await expect(readableToString(output)).resolves.toEqual('data');
+      const piped = pipeStreamsAndErrors(input, output);
+      await expect(readableToString(piped)).resolves.toEqual('data');
     });
 
     it('pipes errors from one stream to the other.', async(): Promise<void> => {
-      const input = streamifyArray([ 'data' ]);
+      const input = new PassThrough();
       input.read = (): any => {
         input.emit('error', new Error('error'));
         return null;
       };
       const output = new PassThrough();
-      pipeStreamsAndErrors(input, output);
-      await expect(readableToString(output)).rejects.toThrow(new Error('error'));
+      const piped = pipeStreamsAndErrors(input, output);
+      await expect(readableToString(piped)).rejects.toThrow(new Error('error'));
     });
 
     it('supports mapping errors to something else.', async(): Promise<void> => {
@@ -70,8 +70,8 @@ describe('Util function', (): void => {
         return null;
       };
       const output = new PassThrough();
-      pipeStreamsAndErrors(input, output, (): any => new Error('other error'));
-      await expect(readableToString(output)).rejects.toThrow(new Error('other error'));
+      const piped = pipeStreamsAndErrors(input, output, (): any => new Error('other error'));
+      await expect(readableToString(piped)).rejects.toThrow(new Error('other error'));
     });
   });
 

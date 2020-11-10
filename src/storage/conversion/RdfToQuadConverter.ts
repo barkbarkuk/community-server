@@ -39,8 +39,8 @@ export class RdfToQuadConverter extends TypedRepresentationConverter {
 
     // Wrap the stream such that errors are transformed
     // (Node 10 requires both writableObjectMode and readableObjectMode)
-    const data = new PassThrough({ writableObjectMode: true, readableObjectMode: true });
-    pipeStreamsAndErrors(rawQuads, data, (error): Error => new UnsupportedHttpError(error.message));
+    const pass = new PassThrough({ writableObjectMode: true, readableObjectMode: true });
+    const data = pipeStreamsAndErrors(rawQuads, pass, (error): Error => new UnsupportedHttpError(error.message));
 
     return {
       binary: false,
