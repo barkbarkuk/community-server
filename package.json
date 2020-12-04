@@ -47,7 +47,7 @@
     "prepare": "npm run build",
     "start": "node ./bin/server.js -p 3000",
     "test": "npm run jest",
-    "test:deploy": "test/deploy/validate-package.sh",
+    "test:deploy": "node test/deploy/validate-package.js",
     "test:integration": "jest --coverageThreshold '{}' test/integration",
     "test:system": "test/system/run-solid-test-suite.sh",
     "test:unit": "jest test/unit",
@@ -132,6 +132,7 @@
     "rimraf": "^3.0.2",
     "stream-to-string": "^1.1.0",
     "supertest": "^6.0.0",
+    "tree-kill": "^1.2.2",
     "ts-jest": "^26.3.0",
     "typescript": "^4.0.2"
   }
